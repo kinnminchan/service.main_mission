@@ -1,9 +1,9 @@
-local playerMission = false
+local playerInMission = false
 
 local playerCurrentBlips
 local playerCurrentProducts = {}
 
-local missionDesign = [[
+local missionCSS = [[
     .div_mission {
         position: absolute;
         font-size: 13px;
@@ -103,7 +103,7 @@ end
 
 GenerateMissionArea = function (mission, position)
     CreateThread(function ()
-        while playerMission do
+        while playerInMission do
             local waitTime = 500
 
             local player = PlayerPedId()
@@ -130,7 +130,7 @@ StartMission = function (mission, missionLevel)
     local randomIndex = math.random(1, #mission.positions[missionLevel])
     local randomPosition = mission.positions[missionLevel][randomIndex]
 
-    playerMission = true
+    playerInMission = true
 
     GenerateBlips(mission, randomPosition)
     GenerateMissionArea(mission, randomPosition)
@@ -154,7 +154,7 @@ StartMission = function (mission, missionLevel)
 
     local playerProductListToString = table.concat(playerProductList, "<br>") -- 줄바꿈을 위해 HTML 태그를 추가합니다.
 
-    SetDiv('mission', missionDesign, '')
+    SetDiv('mission', missionCSS, '')
     SetDivContent('mission', string.format([[
         <div class='div_mission'>
             <div class='name'>HYBE MISSION</div>
@@ -170,11 +170,11 @@ RegisterNetEvent('client/main/mission:StartMission', function (mission, missionL
 end)
 
 local StopMission = function ()
-    if not playerMission then
+    if not playerInMission then
         return
     end
 
-    playerMission = false -- 미션 구역을 제거합니다.
+    playerInMission = false -- 미션 구역을 제거합니다.
     RemoveBlip(playerCurrentBlips); playerCurrentBlips = nil -- 미션 빌립스를 제거합니다.
     playerCurrentProducts = {} -- 미션 아이템 목록을 초기화합니다.
 
